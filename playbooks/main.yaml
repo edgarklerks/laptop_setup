@@ -1,4 +1,4 @@
-- name: Check that vars are included
+- name: Check that vars are included and follow spec
   hosts: localhost
   tasks:
     - name: Check var included
