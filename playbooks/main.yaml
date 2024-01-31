@@ -64,7 +64,7 @@
         mode: "0744"
     - name: Set git config
       ansible.builtin.copy:
-        src: ../conf/gitconfig
+        src: ../conf/gitconfig.j2
         dest: "{{ user }}/.gitconfig"
         owner: "{{ userid }}"
         group: "{{ userid }}"
@@ -107,6 +107,8 @@
         - neorg.lua
         - options.lua
         - haskell.lua
+        - lsp.lua
+        - notify.lua
     - name: Create sway directory
       ansible.builtin.file:
         name: "{{ user }}/.config/sway"
