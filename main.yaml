@@ -8,7 +8,7 @@
       loop: ["git", "curl", "fuse", "fish", "sddm", "mako-notifier", "npm",
                 "fzf", "ripgrep", "cmake", "python3-venv", "cmake",
                 "libz-dev", "libtinfo-dev", "htop", "sway", "libgmp-dev",
-                "i3blocks", "bemenu", "libffi-dev", "libncurses-dev"]
+                "i3blocks", "bemenu", "libffi-dev", "libncurses-dev", "openjdk-22-jdk"]
 
 - name: Run install scripts
   hosts: localhost 
@@ -29,6 +29,7 @@
         - {script: install_neovim.sh,  creates: "{{user}}/bin/nvim", system: no}
         - {script: install_fish.sh, creates: /usr/bin/fish, system: yes}
         - {script: install_kitty.sh, creates: "{{user}}/.local/kitty.app/bin/kitty", system: no}
+        - {script: install_scala.sh, creates: "{{user}}/.local/share/coursier/bin/scala", system: no}
         - {script: install_ghcup.sh, creates: "{{user}}/.ghcup/bin/ghcup", system: no}
     - name: "Change user"
       ansible.builtin.user:
