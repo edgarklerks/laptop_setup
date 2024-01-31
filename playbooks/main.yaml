@@ -5,6 +5,15 @@
       ansible.builtin.assert:
         that:
           - vars_included == 1
+          - input_device_id is defined
+          - USERNAME is defined
+          - NAME is defined
+          - EMAIL is defined
+    - name: "Check if {{ USERNAME }} exists"
+      getent:
+        database: passwd
+        key: "{{ USERNAME }}"
+
 - name: Install packages
   hosts: localhost
   tasks:
