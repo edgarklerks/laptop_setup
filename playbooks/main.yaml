@@ -1,3 +1,10 @@
+- name: Check that vars are included
+  hosts: localhost
+  tasks:
+    - name: Check var included
+      ansible.builtin.assert:
+        that:
+          - vars_included == 1
 - name: Install packages
   hosts: localhost
   tasks:
@@ -22,7 +29,7 @@
 - name: Run install scripts
   hosts: localhost
   vars:
-    user: "{{ ansible_env.HOME }}"
+    user: "/home/{{ USERNAME }}"
   tasks:
     - name: "Run script"
       ansible.builtin.command: "bash ../scripts/{{ item.script }}"
@@ -45,8 +52,8 @@
 - name: Install configurations
   hosts: localhost
   vars:
-    user: "{{ansible_env.HOME}}"
-    userid: "{{ansible_user_id}}"
+    user: "/home/{{ USERNAME }}"
+    userid: "{{ USERNAME }}"
   tasks:
     - name: Set fish config
       ansible.builtin.copy:
@@ -108,8 +115,8 @@
         group: "{{ userid }}"
         mode: "0755"
     - name: Set sway config
-      ansible.builtin.copy:
-        src: ../conf/swayconfig
+      ansible.builtin.template:
+        src: ../conf/swayconfig.j2
         dest: "{{ user }}/.config/sway/config"
         owner: "{{ userid }}"
         group: "{{ userid }}"

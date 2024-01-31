@@ -1,2 +1,2 @@
 sudo true
-ansible-playbook playbooks/main.yaml
+ansible-playbook -e @laptop.yaml playbooks/main.yaml
