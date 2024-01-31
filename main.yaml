@@ -1,7 +1,7 @@
-- name: Install apt packages 
+- name: Install packages 
   hosts: localhost 
   tasks:
-    - name: "Add package {{item}}"
+    - name: "Install apt package"
       become: yes
       ansible.builtin.apt:
         name: "{{ item }}"
@@ -9,6 +9,15 @@
                 "fzf", "ripgrep", "cmake", "python3-venv", "cmake",
                 "libz-dev", "libtinfo-dev", "htop", "sway", "libgmp-dev",
                 "i3blocks", "bemenu", "libffi-dev", "libncurses-dev", "openjdk-22-jdk"]
+
+    - name: "Install snap packages"
+      become: yes
+      ansible.builtin.shell: "snap install {{item.package}}"
+      args:
+        creates: "{{item.creates}}"
+      loop:
+        - {package: slack, creates: /snap/bin/slack}
+
 
 - name: Run install scripts
   hosts: localhost 
