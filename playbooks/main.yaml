@@ -63,7 +63,7 @@
         group: "{{ userid }}"
         mode: "0744"
     - name: Set git config
-      ansible.builtin.copy:
+      ansible.builtin.template:
         src: ../conf/gitconfig.j2
         dest: "{{ user }}/.gitconfig"
         owner: "{{ userid }}"
