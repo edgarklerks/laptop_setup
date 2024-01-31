@@ -6,6 +6,8 @@
         that:
           - vars_included == 1
           - input_device_id is defined
+          - kitty_font is defined
+          - kitty_font_size is defined
           - USERNAME is defined
           - NAME is defined
           - EMAIL is defined
@@ -24,7 +26,7 @@
       loop: ["git", "curl", "fuse", "fish", "sddm", "mako-notifier", "npm",
              "fzf", "ripgrep", "cmake", "python3-venv", "ansible-lint",
              "libz-dev", "libtinfo-dev", "htop", "sway", "libgmp-dev",
-             "i3blocks", "bemenu", "libffi-dev", "libncurses-dev", "openjdk-22-jdk"]
+             "i3blocks", "bemenu", "libffi-dev", "libncurses-dev", "openjdk-22-jdk", "elinks"]
 
     - name: "Install snap packages"
       become: true
@@ -52,6 +54,7 @@
         - {script: install_scala.sh, creates: "{{ user }}/.local/share/coursier/bin/scala", system: false}
         - {script: install_ghcup.sh, creates: "{{ user }}/.ghcup/bin/ghcup", system: false}
         - {script: install_yarn.sh, creates: /usr/local/bin/yarn, system: true}
+        - {script: install_fonts.sh, creates: "{{ user }}/.fonts/HackNerdFont-Bold.ttf", system: false}
     - name: "Change user"
       ansible.builtin.user:
         name: "{{ ansible_user_id }}"
@@ -129,6 +132,13 @@
       ansible.builtin.template:
         src: ../conf/swayconfig.j2
         dest: "{{ user }}/.config/sway/config"
+        owner: "{{ userid }}"
+        group: "{{ userid }}"
+        mode: "0644"
+    - name: Install kitty.conf
+      ansible.builtin.template:
+        src: ../conf/kitty.conf.j2
+        dest: "{{ user }}/.config/kitty/kitty.conf"
         owner: "{{ userid }}"
         group: "{{ userid }}"
         mode: "0644"
