@@ -1,0 +1,116 @@
+- name: Install packages
+  hosts: localhost
+  tasks:
+    - name: "Install apt package"
+      become: true
+      ansible.builtin.apt:
+        name: "{{ item }}"
+      loop: ["git", "curl", "fuse", "fish", "sddm", "mako-notifier", "npm",
+             "fzf", "ripgrep", "cmake", "python3-venv", "ansible-lint",
+             "libz-dev", "libtinfo-dev", "htop", "sway", "libgmp-dev",
+             "i3blocks", "bemenu", "libffi-dev", "libncurses-dev", "openjdk-22-jdk"]
+
+    - name: "Install snap packages"
+      become: true
+      ansible.builtin.command: "snap install {{ item.package }}"
+      args:
+        creates: "{{ item.creates }}"
+      loop:
+        - {package: slack, creates: /snap/bin/slack}
+
+
+- name: Run install scripts
+  hosts: localhost
+  vars:
+    user: "{{ ansible_env.HOME }}"
+  tasks:
+    - name: "Run script"
+      ansible.builtin.command: "bash ../scripts/{{ item.script }}"
+      become: "{{ item.system }}"
+      args:
+        creates: "{{ item.creates }}"
+      loop:
+        - {script: install_neovim.sh, creates: "{{ user }}/bin/nvim", system: false}
+        - {script: install_fish.sh, creates: /usr/bin/fish, system: true}
+        - {script: install_kitty.sh, creates: "{{ user }}/.local/kitty.app/bin/kitty", system: false}
+        - {script: install_scala.sh, creates: "{{ user }}/.local/share/coursier/bin/scala", system: false}
+        - {script: install_ghcup.sh, creates: "{{ user }}/.ghcup/bin/ghcup", system: false}
+        - {script: install_yarn.sh, creates: /usr/local/bin/yarn, system: true}
+    - name: "Change user"
+      ansible.builtin.user:
+        name: "{{ ansible_user_id }}"
+        shell: /usr/bin/fish
+
+
+- name: Install configurations
+  hosts: localhost
+  vars:
+    user: "{{ansible_env.HOME}}"
+    userid: "{{ansible_user_id}}"
+  tasks:
+    - name: Set fish config
+      ansible.builtin.copy:
+        src: ../conf/local_bin.fish
+        dest: "{{ user }}/.config/fish/conf.d/local_bin.fish"
+        owner: "{{ userid }}"
+        group: "{{ userid }}"
+        mode: "0744"
+    - name: Set git config
+      ansible.builtin.copy:
+        src: ../conf/gitconfig
+        dest: "{{ user }}/.gitconfig"
+        owner: "{{ userid }}"
+        group: "{{ userid }}"
+        mode: "0644"
+    - name: Create nvim directory
+      ansible.builtin.file:
+        name: "{{ user }}/.config/nvim"
+        state: directory
+        owner: "{{ userid }}"
+        group: "{{ userid }}"
+        mode: "0755"
+    - name: Create nvim directory
+      ansible.builtin.file:
+        name: "{{ user }}/.config/nvim/lscripts"
+        state: directory
+        owner: "{{ userid }}"
+        group: "{{ userid }}"
+        mode: "0755"
+    - name: Set nvim config
+      ansible.builtin.copy:
+        src: ../conf/nvim/init.lua
+        dest: "{{ user }}/.config/nvim/init.lua"
+        owner: "{{ userid }}"
+        group: "{{ userid }}"
+        mode: "0644"
+    - name: Install nvim lscripts
+      ansible.builtin.copy:
+        src: "../conf/nvim/lscripts/{{ item }}"
+        dest: "{{ user }}/.config/nvim/lscripts/{{ item }}"
+        owner: "{{ userid }}"
+        group: "{{ userid }}"
+        mode: "0644"
+      loop:
+        - cmp.lua
+        - lazy.lua
+        - load_plugins.lua
+        - treesitter.lua
+        - telescope.lua
+        - treesitter.lua
+        - neorg.lua
+        - options.lua
+        - haskell.lua
+    - name: Create sway directory
+      ansible.builtin.file:
+        name: "{{ user }}/.config/sway"
+        state: directory
+        owner: "{{ userid }}"
+        group: "{{ userid }}"
+        mode: "0755"
+    - name: Set sway config
+      ansible.builtin.copy:
+        src: ../conf/swayconfig
+        dest: "{{ user }}/.config/sway/config"
+        owner: "{{ userid }}"
+        group: "{{ userid }}"
+        mode: "0644"
