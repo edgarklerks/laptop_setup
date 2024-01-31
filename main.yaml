@@ -1,0 +1,86 @@
+- name: Install apt packages 
+  hosts: localhost 
+  tasks:
+    - name: "Add package {{item}}"
+      become: yes
+      ansible.builtin.apt:
+        name: "{{ item }}"
+      loop: ["git", "curl", "fuse", "fish", "sddm", "mako-notifier", "npm",
+                "fzf", "ripgrep", "cmake", "python3-venv", "cmake",
+                "libz-dev", "libtinfo-dev", "htop", "sway", "libgmp-dev",
+                "i3blocks", "bemenu", "libffi-dev", "libncurses-dev"]
+
+- name: Run install scripts
+  hosts: localhost 
+  vars:
+    user: "{{ansible_env.HOME}}"
+  tasks:
+    - name: "home dir"
+      debug: var=ansible_env.HOME
+    - name: "user id"
+      debug: var="{{ansible_user_id}}"
+    - name: "Run script {{item}}"
+      ansible.builtin.shell: "bash scripts/{{item.script}}"
+      become: "{{item.system}}"
+      args:
+        creates: "{{item.creates}}"
+
+      loop:
+        - {script: install_neovim.sh,  creates: "{{user}}/bin/nvim", system: no}
+        - {script: install_fish.sh, creates: /usr/bin/fish, system: yes}
+        - {script: install_kitty.sh, creates: "{{user}}/.local/kitty.app/bin/kitty", system: no}
+        - {script: install_ghcup.sh, creates: "{{user}}/.ghcup/bin/ghcup", system: no}
+    - name: "Change user"
+      ansible.builtin.user:
+        name: "{{ansible_user_id}}"
+        shell: /usr/bin/fish
+
+
+- name: Install configurations
+  hosts: localhost
+  vars:
+    user: "{{ansible_env.HOME}}"
+    userid: "{{ansible_user_id}}"
+  tasks:
+    - name: Set fish config 
+      ansible.builtin.copy:
+        src: conf/local_bin.fish
+        dest: "{{user}}/.config/fish/conf.d/local_bin.fish"
+        owner: "{{userid}}"
+        group: "{{userid}}"
+        mode: "0744"
+    - name: Set git config
+      ansible.builtin.copy:
+        src: conf/gitconfig
+        dest: "{{user}}/.gitconfig"
+        owner: "{{userid}}"
+        group: "{{userid}}"
+        mode: "0644"
+    - name: Create nvim directory
+      ansible.builtin.file:
+        name: "{{user}}/.config/nvim"
+        state: directory
+        owner: "{{userid}}"
+        group: "{{userid}}"
+        mode: "0755"
+    - name: Set nvim config
+      ansible.builtin.copy:
+        src: conf/init.lua
+        dest: "{{user}}/.config/nvim/init.lua"
+        owner: "{{userid}}"
+        group: "{{userid}}"
+        mode: "0644"
+    - name: Create sway directory
+      ansible.builtin.file:
+        name: "{{user}}/.config/sway"
+        state: directory
+        owner: "{{userid}}"
+        group: "{{userid}}"
+        mode: "0755"
+    - name: Set nvim config
+      ansible.builtin.copy:
+        src: conf/swayconfig
+        dest: "{{user}}/.config/sway/config"
+        owner: "{{userid}}"
+        group: "{{userid}}"
+        mode: "0644"
