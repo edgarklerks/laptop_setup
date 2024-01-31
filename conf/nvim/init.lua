@@ -2,9 +2,13 @@
 local function loadScript(name)
         local lpath = vim.fn.stdpath("config") .. "/lscripts"
         local scriptPath = lpath .. "/" .. name .. ".lua"
-        if not vim.fn.exists(scriptPath) then 
-                vim.notify("Error script" .. name  .. " doesn't exist", vim.log.levels.ERROR, {})
+        local f = io.open(scriptPath, "r")
+
+        if f == nil then 
+                vim.notify("Error script " .. name  .. " doesn't exist. Skipping...", vim.log.levels.ERROR, {})
+                return
         end
+        io.close(f)
         vim.cmd("source " .. scriptPath)
 
 end
