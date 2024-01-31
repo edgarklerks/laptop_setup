@@ -1,3 +1,4 @@
+-- Function to load scripts, notifies the user something is amiss
 local function loadScript(name)
         local lpath = vim.fn.stdpath("config") .. "/lscripts"
         local scriptPath = lpath .. "/" .. name .. ".lua"
@@ -8,43 +9,28 @@ local function loadScript(name)
 
 end
 
-vim.g.mapleader=","
-vim.opt.termguicolors=true
+-- Mapping leader before everything else 
+loadScript("options")
 
+-- Load plugins 
 loadScript("lazy")
-
 loadScript("load_plugins")
 
+-- Changes notifications and load oil, whatever it id 
+loadScript("notify")
 require("oil").setup()
-
-require("notify").setup({
-  background_colour = "#000000",
-})
-
-vim.notify = require("notify")
 require("mason").setup()
+
+-- Load the configurations of other plugins 
+-- I don't know whether the order was important, so I let them be
 
 
 loadScript("cmp")
-loadScript("options")
-
+-- One of setup calls are fine, don't need to be put in their own files yet
 require("neodev").setup({})
 require("gitsigns").setup()
 loadScript("treesitter")
-
-require("lspconfig").lua_ls.setup({
-        settings = {
-                Lua = {
-                        diagnostics = {
-                                globals = {'vim'}
-                        },
-                        workspace = {
-                                library = vim.api.nvim_get_runtime_file("", true)
-                        }
-                }
-        }
-})
-
+loadScript("lsp")
 loadScript("telescope")
 loadScript("neorg")
 loadScript("haskell")
