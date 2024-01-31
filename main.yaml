@@ -78,7 +78,7 @@
         owner: "{{userid}}"
         group: "{{userid}}"
         mode: "0755"
-    - name: Set nvim config
+    - name: Set sway config
       ansible.builtin.copy:
         src: conf/swayconfig
         dest: "{{user}}/.config/sway/config"
