@@ -79,28 +79,19 @@
         - "{{ user }}/.config/nvim/lscripts"
         - "{{ user }}/.config/i3blocks"
         - "{{ user }}/.config/sway"
-    - name: Set i3blocks config 
+    - name: Copy files 
       ansible.builtin.copy:
-        src: ../conf/i3blocks.conf
-        dest: "{{ user }}/.config/i3blocks/config"
+        src: "../conf/{{item.src}}"
+        dest: "{{item.dest}}"
         owner: "{{ userid }}"
         group: "{{ userid }}"
         mode: "0644"
-    - name: Set fish config
-      ansible.builtin.copy:
-        src: ../conf/local_bin.fish
-        dest: "{{ user }}/.config/fish/conf.d/local_bin.fish"
-        owner: "{{ userid }}"
-        group: "{{ userid }}"
-        mode: "0744"
-    - name: Set fish variables
-      ansible.builtin.copy:
-        src: ../conf/fish_variables
-        dest: "{{ user }}/.config/fish/fish_variables"
-        owner: "{{ userid }}"
-        group: "{{ userid }}"
-        mode: "0644"
-    - name: Copy templates 
+      loop:
+        - {src: "fish_variables", dest: "{{ user }}/.config/fish/fish_variables" }
+        - {src: "local_bin.fish", dest: "{{ user }}/.config/fish/conf.d/local_bin.fish" }
+        - {src: "i3blocks.conf", dest: "{{ user }}/.config/i3blocks/config" }
+
+    - name: Copy templates
       ansible.builtin.template:
         src: "../conf/{{item.src}}"
         dest: "{{item.dest}}"
@@ -120,6 +111,7 @@
         owner: "{{ userid }}"
         group: "{{ userid }}"
         mode: "0644"
+
     - name: Install nvim lscripts
       ansible.builtin.copy:
         src: "../conf/nvim/lscripts/{{ item }}"
