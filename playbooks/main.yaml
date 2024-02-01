@@ -67,6 +67,25 @@
     user: "/home/{{ USERNAME }}"
     userid: "{{ USERNAME }}"
   tasks:
+    - name: Create directories
+      ansible.builtin.file:
+        name: "{{ item }}"
+        state: directory
+        owner: "{{ userid }}"
+        group: "{{ userid }}"
+        mode: "0755"
+      loop:
+        - "{{ user }}/.config/nvim"
+        - "{{ user }}/.config/nvim/lscripts"
+        - "{{ user }}/.config/i3blocks"
+        - "{{ user }}/.config/sway"
+    - name: Set i3blocks config 
+      ansible.builtin.copy:
+        src: ../conf/i3blocks.conf
+        dest: "{{ user }}/.config/i3blocks/config"
+        owner: "{{ userid }}"
+        group: "{{ userid }}"
+        mode: "0644"
     - name: Set fish config
       ansible.builtin.copy:
         src: ../conf/local_bin.fish
@@ -81,27 +100,19 @@
         owner: "{{ userid }}"
         group: "{{ userid }}"
         mode: "0644"
-    - name: Set git config
+    - name: Copy templates 
       ansible.builtin.template:
-        src: ../conf/gitconfig.j2
-        dest: "{{ user }}/.gitconfig"
+        src: "../conf/{{item.src}}"
+        dest: "{{item.dest}}"
         owner: "{{ userid }}"
         group: "{{ userid }}"
         mode: "0644"
-    - name: Create nvim directory
-      ansible.builtin.file:
-        name: "{{ user }}/.config/nvim"
-        state: directory
-        owner: "{{ userid }}"
-        group: "{{ userid }}"
-        mode: "0755"
-    - name: Create nvim directory
-      ansible.builtin.file:
-        name: "{{ user }}/.config/nvim/lscripts"
-        state: directory
-        owner: "{{ userid }}"
-        group: "{{ userid }}"
-        mode: "0755"
+      loop:
+        - {src: gitconfig.j2, dest: "{{user}}/.gitconfig"}
+        - {src: swayconfig.j2, dest: "{{user}}/.config/sway/config"}
+        - {src: kitty.conf.j2, dest: "{{user}}/.config/kitty/kitty.conf"}
+
+
     - name: Set nvim config
       ansible.builtin.copy:
         src: ../conf/nvim/init.lua
@@ -128,24 +139,3 @@
         - haskell.lua
         - lsp.lua
         - notify.lua
-    - name: Create sway directory
-      ansible.builtin.file:
-        name: "{{ user }}/.config/sway"
-        state: directory
-        owner: "{{ userid }}"
-        group: "{{ userid }}"
-        mode: "0755"
-    - name: Set sway config
-      ansible.builtin.template:
-        src: ../conf/swayconfig.j2
-        dest: "{{ user }}/.config/sway/config"
-        owner: "{{ userid }}"
-        group: "{{ userid }}"
-        mode: "0644"
-    - name: Install kitty.conf
-      ansible.builtin.template:
-        src: ../conf/kitty.conf.j2
-        dest: "{{ user }}/.config/kitty/kitty.conf"
-        owner: "{{ userid }}"
-        group: "{{ userid }}"
-        mode: "0644"
