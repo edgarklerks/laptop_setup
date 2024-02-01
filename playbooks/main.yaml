@@ -1,20 +1,8 @@
 - name: Check that vars are included and follow spec
   hosts: localhost
   tasks:
-    - name: Check var included
-      ansible.builtin.assert:
-        that:
-          - vars_included == 1
-          - input_device_id is defined
-          - kitty_font is defined
-          - kitty_font_size is defined
-          - USERNAME is defined
-          - NAME is defined
-          - EMAIL is defined
-    - name: "Check if {{ USERNAME }} exists"
-      getent:
-        database: passwd
-        key: "{{ USERNAME }}"
+    - name: Check vars
+      include_tasks: tasks/check_vars.yaml
 
 - name: Install packages
   hosts: localhost
@@ -23,11 +11,7 @@
       become: true
       ansible.builtin.apt:
         name: "{{ item }}"
-      loop: ["git", "curl", "fuse", "fish", "sddm", "mako-notifier", "npm",
-             "fzf", "ripgrep", "cmake", "python3-venv", "ansible-lint",
-             "libz-dev", "libtinfo-dev", "htop", "sway", "libgmp-dev",
-             "i3blocks", "bemenu", "libffi-dev", "libncurses-dev", "openjdk-22-jdk", "elinks"]
-
+      loop: "{{ packages }}"
     - name: "Install snap packages"
       become: true
       ansible.builtin.command: "snap install {{ item.package }}"
@@ -47,14 +31,7 @@
       become: "{{ item.system }}"
       args:
         creates: "{{ item.creates }}"
-      loop:
-        - {script: install_neovim.sh, creates: "{{ user }}/bin/nvim", system: false}
-        - {script: install_fish.sh, creates: /usr/bin/fish, system: true}
-        - {script: install_kitty.sh, creates: "{{ user }}/.local/kitty.app/bin/kitty", system: false}
-        - {script: install_scala.sh, creates: "{{ user }}/.local/share/coursier/bin/scala", system: false}
-        - {script: install_ghcup.sh, creates: "{{ user }}/.ghcup/bin/ghcup", system: false}
-        - {script: install_yarn.sh, creates: /usr/local/bin/yarn, system: true}
-        - {script: install_fonts.sh, creates: "{{ user }}/.fonts/HackNerdFont-Bold.ttf", system: false}
+      loop: "{{ scripts }}"
     - name: "Change user"
       ansible.builtin.user:
         name: "{{ ansible_user_id }}"
@@ -74,11 +51,7 @@
         owner: "{{ userid }}"
         group: "{{ userid }}"
         mode: "0755"
-      loop:
-        - "{{ user }}/.config/nvim"
-        - "{{ user }}/.config/nvim/lscripts"
-        - "{{ user }}/.config/i3blocks"
-        - "{{ user }}/.config/sway"
+      loop: "{{ directories }}"
     - name: Copy files 
       ansible.builtin.copy:
         src: "../conf/{{item.src}}"
@@ -86,11 +59,7 @@
         owner: "{{ userid }}"
         group: "{{ userid }}"
         mode: "0644"
-      loop:
-        - {src: "fish_variables", dest: "{{ user }}/.config/fish/fish_variables" }
-        - {src: "local_bin.fish", dest: "{{ user }}/.config/fish/conf.d/local_bin.fish" }
-        - {src: "i3blocks.conf", dest: "{{ user }}/.config/i3blocks/config" }
-
+      loop: "{{ files }}"
     - name: Copy templates
       ansible.builtin.template:
         src: "../conf/{{item.src}}"
@@ -98,10 +67,6 @@
         owner: "{{ userid }}"
         group: "{{ userid }}"
         mode: "0644"
-      loop:
-        - {src: gitconfig.j2, dest: "{{user}}/.gitconfig"}
-        - {src: swayconfig.j2, dest: "{{user}}/.config/sway/config"}
-        - {src: kitty.conf.j2, dest: "{{user}}/.config/kitty/kitty.conf"}
-
+      loop: "{{ templates }}"
     - name: Install nvim
       include_tasks: tasks/nvim.yaml

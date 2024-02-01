@@ -1,0 +1,52 @@
+
+user: "/home/{{ USERNAME }}"
+userid: "{{ USERNAME }}"
+
+packages: ["git", "curl", "fuse", "fish", "sddm", "mako-notifier", "npm",
+             "fzf", "ripgrep", "cmake", "python3-venv", "ansible-lint",
+             "libz-dev", "libtinfo-dev", "htop", "sway", "libgmp-dev",
+             "i3blocks", "bemenu", "libffi-dev", "libncurses-dev", "openjdk-22-jdk", "elinks"]
+
+scripts:
+  - {script: install_neovim.sh, creates: "{{ user }}/bin/nvim", system: false}
+  - {script: install_fish.sh, creates: /usr/bin/fish, system: true}
+  - {script: install_kitty.sh, creates: "{{ user }}/.local/kitty.app/bin/kitty", system: false}
+  - {script: install_scala.sh, creates: "{{ user }}/.local/share/coursier/bin/scala", system: false}
+  - {script: install_ghcup.sh, creates: "{{ user }}/.ghcup/bin/ghcup", system: false}
+  - {script: install_yarn.sh, creates: /usr/local/bin/yarn, system: true}
+  - {script: install_fonts.sh, creates: "{{ user }}/.fonts/HackNerdFont-Bold.ttf", system: false}
+
+directories:
+  - "{{ user }}/.config/nvim"
+  - "{{ user }}/.config/nvim/lscripts"
+  - "{{ user }}/.config/i3blocks"
+  - "{{ user }}/.config/sway"
+
+files:
+  - {src: "fish_variables", dest: "{{ user }}/.config/fish/fish_variables" }
+  - {src: "local_bin.fish", dest: "{{ user }}/.config/fish/conf.d/local_bin.fish" }
+  - {src: "i3blocks.conf", dest: "{{ user }}/.config/i3blocks/config" }
+
+templates:
+  - {src: gitconfig.j2, dest: "{{user}}/.gitconfig"}
+  - {src: swayconfig.j2, dest: "{{user}}/.config/sway/config"}
+  - {src: kitty.conf.j2, dest: "{{user}}/.config/kitty/kitty.conf"}
+
+lscripts:
+  - cmp.lua
+  - lazy.lua
+  - load_plugins.lua
+  - treesitter.lua
+  - telescope.lua
+  - treesitter.lua
+  - neorg.lua
+  - options.lua
+  - haskell.lua
+  - lsp.lua
+  - notify.lua
+
+
+
+
+
+

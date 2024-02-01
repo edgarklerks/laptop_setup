@@ -12,16 +12,5 @@
     owner: "{{ userid }}"
     group: "{{ userid }}"
     mode: "0644"
-  loop:
-    - cmp.lua
-    - lazy.lua
-    - load_plugins.lua
-    - treesitter.lua
-    - telescope.lua
-    - treesitter.lua
-    - neorg.lua
-    - options.lua
-    - haskell.lua
-    - lsp.lua
-    - notify.lua
+  loop: "{{lscripts}}"
 

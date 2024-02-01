@@ -1,0 +1,16 @@
+    - name: Check var included
+      ansible.builtin.assert:
+        that:
+          - vars_included == 1
+          - input_device_id is defined
+          - kitty_font is defined
+          - kitty_font_size is defined
+          - USERNAME is defined
+          - NAME is defined
+          - EMAIL is defined
+    - name: "Check if {{ USERNAME }} exists"
+      getent:
+        database: passwd
+        key: "{{ USERNAME }}"
+
+
