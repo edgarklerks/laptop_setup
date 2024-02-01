@@ -74,6 +74,13 @@
         owner: "{{ userid }}"
         group: "{{ userid }}"
         mode: "0744"
+    - name: Set fish variables
+      ansible.builtin.copy:
+        src: ../conf/fish_variables
+        dest: "{{ user }}/.config/fish/fish_variables"
+        owner: "{{ userid }}"
+        group: "{{ userid }}"
+        mode: "0644"
     - name: Set git config
       ansible.builtin.template:
         src: ../conf/gitconfig.j2
