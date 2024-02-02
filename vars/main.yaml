@@ -28,9 +28,9 @@ files:
   - {src: "i3blocks.conf", dest: "{{ HOME }}/.config/i3blocks/config" , os: linux}
 
 templates:
-  - {src: gitconfig.j2, dest: "{{user}}/.gitconfig", os: both}
-  - {src: swayconfig.j2, dest: "{{user}}/.config/sway/config",os: linux}
-  - {src: kitty.conf.j2, dest: "{{user}}/.config/kitty/kitty.conf",os: both}
+  - {src: gitconfig.j2, dest: "{{HOME}}/.gitconfig", os: both}
+  - {src: swayconfig.j2, dest: "{{HOME}}/.config/sway/config",os: linux}
+  - {src: kitty.conf.j2, dest: "{{HOME}}/.config/kitty/kitty.conf",os: both}
 
 lscripts:
   - cmp.lua

@@ -4,6 +4,7 @@ kitty_font: "Geist Mono Nerd Font"
 kitty_font_size: 13
 os: linux
 USERNAME: edgar-klerks
+GROUP: edgar-klerks
 HOME: /home/edgar-klerks
 NAME: Edgar Klerks
 EMAIL: edgar.klerks@gmail.com

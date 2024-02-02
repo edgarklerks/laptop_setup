@@ -8,6 +8,8 @@
           - USERNAME is defined
           - NAME is defined
           - EMAIL is defined
+          - HOME is defined
+          - GROUP is defined
     - name: Check scripts are in correct format
       ansible.builtin.assert:
         that: 
