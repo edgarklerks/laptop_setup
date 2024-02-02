@@ -2,9 +2,10 @@ vars_included: 1
 input_device_id: "1739:33381:SYNA307C:00_06CB:8265_Touchpad"
 kitty_font: "Geist Mono Nerd Font"
 kitty_font_size: 13
-os: linux
-USERNAME: edgar-klerks
-HOME: /home/edgar-klerks
+os: macos
+USERNAME: edgarklerks
+HOME: /Users/edgarklerks
 NAME: Edgar Klerks
 EMAIL: edgar.klerks@gmail.com
-SHELL: /usr/bin/fish
+SHELL: /opt/homebrew/bin/fish
+

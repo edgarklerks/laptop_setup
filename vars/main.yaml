@@ -8,29 +8,29 @@ packages: ["git", "curl", "fuse", "fish", "sddm", "mako-notifier", "npm",
              "i3blocks", "bemenu", "libffi-dev", "libncurses-dev", "openjdk-22-jdk", "elinks"]
 
 scripts:
-  - {script: install_neovim.sh, creates: "{{ user }}/bin/nvim", system: false}
-  - {script: install_fish.sh, creates: /usr/bin/fish, system: true}
-  - {script: install_kitty.sh, creates: "{{ user }}/.local/kitty.app/bin/kitty", system: false}
-  - {script: install_scala.sh, creates: "{{ user }}/.local/share/coursier/bin/scala", system: false}
-  - {script: install_ghcup.sh, creates: "{{ user }}/.ghcup/bin/ghcup", system: false}
-  - {script: install_yarn.sh, creates: /usr/local/bin/yarn, system: true}
-  - {script: install_fonts.sh, creates: "{{ user }}/.fonts/HackNerdFont-Bold.ttf", system: false}
+  - {script: install_neovim.sh, creates: "{{ HOME }}/bin/nvim", system: false, os: linux}
+  - {script: install_fish.sh, creates: /usr/bin/fish, system: true, os: linux}
+  - {script: install_kitty.sh, creates: "{{ HOME }}/.local/kitty.app/bin/kitty", system: false, os: linux}
+  - {script: install_scala.sh, creates: "{{ HOME }}/.local/share/coursier/bin/scala", system: false, os: linux}
+  - {script: install_ghcup.sh, creates: "{{ HOME }}/.ghcup/bin/ghcup", system: false, os: linux}
+  - {script: install_yarn.sh, creates: /usr/local/bin/yarn, system: true, os: linux}
+  - {script: install_fonts.sh, creates: "{{ HOME }}/.fonts/HackNerdFont-Bold.ttf", system: false, os: both}
 
 directories:
-  - "{{ user }}/.config/nvim"
-  - "{{ user }}/.config/nvim/lscripts"
-  - "{{ user }}/.config/i3blocks"
-  - "{{ user }}/.config/sway"
+  - "{{ HOME }}/.config/nvim"
+  - "{{ HOME }}/.config/nvim/lscripts"
+  - "{{ HOME }}/.config/i3blocks"
+  - "{{ HOME }}/.config/sway"
 
 files:
-  - {src: "fish_variables", dest: "{{ user }}/.config/fish/fish_variables" }
-  - {src: "local_bin.fish", dest: "{{ user }}/.config/fish/conf.d/local_bin.fish" }
-  - {src: "i3blocks.conf", dest: "{{ user }}/.config/i3blocks/config" }
+  - {src: "fish_variables", dest: "{{ HOME }}/.config/fish/fish_variables", os: both}
+  - {src: "local_bin.fish", dest: "{{ HOME }}/.config/fish/conf.d/local_bin.fish" , os: both}
+  - {src: "i3blocks.conf", dest: "{{ HOME }}/.config/i3blocks/config" , os: linux}
 
 templates:
-  - {src: gitconfig.j2, dest: "{{user}}/.gitconfig"}
-  - {src: swayconfig.j2, dest: "{{user}}/.config/sway/config"}
-  - {src: kitty.conf.j2, dest: "{{user}}/.config/kitty/kitty.conf"}
+  - {src: gitconfig.j2, dest: "{{user}}/.gitconfig", os: both}
+  - {src: swayconfig.j2, dest: "{{user}}/.config/sway/config",os: linux}
+  - {src: kitty.conf.j2, dest: "{{user}}/.config/kitty/kitty.conf",os: both}
 
 lscripts:
   - cmp.lua

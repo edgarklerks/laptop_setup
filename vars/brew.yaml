@@ -1,0 +1,2 @@
+casks: [kitty,microsoft-openjdk]
+formulae: [brotli,c-ares,ca-certificates,cairo,cmake,coursier,fish,fontconfig,freetype,fzf,gettext,ghcup,giflib,glib,graphite2,harfbuzz,htop,icu4c,jpeg-turbo,libidn2,libnghttp2,libpng,libtermkey,libtiff,libunistring,libuv,libvterm,libx11,libxau,libxcb,libxdmcp,libxext,libxrender,little-cms2,luajit,luv,lz4,lzo,mpdecimal,msgpack,ncurses,neovim,node,openjdk,openssl@3,pcre2,pipx,pixman,python-argcomplete,python-packaging,python@3.11,python@3.12,readline,ripgrep,sqlite,terraform,tree-sitter,unibilium,wget,xorgproto,xz,yarn,zstd]

@@ -9,39 +9,55 @@
   tasks:
     - name: "Install apt package"
       become: true
+      when: os == "linux"
       ansible.builtin.apt:
         name: "{{ item }}"
       loop: "{{ packages }}"
     - name: "Install snap packages"
       become: true
+      when: os == "linux"
       ansible.builtin.command: "snap install {{ item.package }}"
       args:
         creates: "{{ item.creates }}"
       loop:
         - {package: slack, creates: /snap/bin/slack}
+    - name: "Install brew casks"
+      become: no
+      when: os == "macos"
+      community.general.homebrew:
+        name: "{{item}}"
+        state: present
+      loop: "{{ casks }}"
+    - name: "Install brew formulae"
+      become: no
+      community.general.homebrew:
+        name: "{{item}}"
+        state: present
+      when: os == "macos"
+      loop: "{{ formulae }}"
+
+
+
 
 
 - name: Run install scripts
   hosts: localhost
-  vars:
-    user: "/home/{{ USERNAME }}"
   tasks:
     - name: "Run script"
       ansible.builtin.command: "bash ../scripts/{{ item.script }}"
       become: "{{ item.system }}"
       args:
         creates: "{{ item.creates }}"
-      loop: "{{ scripts }}"
+      loop: "{{ scripts | selectattr('os', 'equalto', os)  | union(scripts | selectattr('os','equalto','both')) }}"
     - name: "Change user"
       ansible.builtin.user:
         name: "{{ ansible_user_id }}"
-        shell: /usr/bin/fish
+        shell: "{{ SHELL }}"
 
 
 - name: Install configurations
   hosts: localhost
   vars:
-    user: "/home/{{ USERNAME }}"
     userid: "{{ USERNAME }}"
   tasks:
     - name: Create directories
@@ -59,7 +75,7 @@
         owner: "{{ userid }}"
         group: "{{ userid }}"
         mode: "0644"
-      loop: "{{ files }}"
+      loop: "{{ files | selectattr('os', 'equalto', os)  | union(files | selectattr('os','equalto','both')) }}"
     - name: Copy templates
       ansible.builtin.template:
         src: "../conf/{{item.src}}"
@@ -67,6 +83,6 @@
         owner: "{{ userid }}"
         group: "{{ userid }}"
         mode: "0644"
-      loop: "{{ templates }}"
+      loop: "{{ templates | selectattr('os', 'equalto', os)  | union(templates | selectattr('os','equalto','both')) }}"
     - name: Install nvim
       include_tasks: tasks/nvim.yaml

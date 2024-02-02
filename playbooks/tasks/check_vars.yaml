@@ -8,7 +8,25 @@
           - USERNAME is defined
           - NAME is defined
           - EMAIL is defined
+    - name: Check scripts are in correct format
+      ansible.builtin.assert:
+        that: 
+          - true
+      loop: "{{ scripts | selectattr('os', 'equalto', os)  | union(scripts | selectattr('os','equalto','both')) }}"
+    - name: Check templates are in correct format
+      loop: "{{ templates | selectattr('os', 'equalto', os)  | union(templates | selectattr('os','equalto','both')) }}"
+      ansible.builtin.assert:
+        that: 
+          - true
+    - name: Check files are in correct format
+      loop: "{{ files | selectattr('os', 'equalto', os)  | union(files | selectattr('os','equalto','both')) }}"
+      ansible.builtin.assert:
+        that: 
+          - true
+
+
     - name: "Check if {{ USERNAME }} exists"
+      when: os == "linux"
       getent:
         database: passwd
         key: "{{ USERNAME }}"
