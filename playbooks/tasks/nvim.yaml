@@ -1,16 +1,16 @@
 - name: Set nvim config
   ansible.builtin.copy:
     src: ../conf/nvim/init.lua
-    dest: "{{ user }}/.config/nvim/init.lua"
+    dest: "{{ HOME }}/.config/nvim/init.lua"
     owner: "{{ userid }}"
-    group: "{{ userid }}"
+    group: "{{ GROUP }}"
     mode: "0644"
 - name: Install nvim lscripts
   ansible.builtin.copy:
     src: "../conf/nvim/lscripts/{{ item }}"
-    dest: "{{ user }}/.config/nvim/lscripts/{{ item }}"
+    dest: "{{ HOME }}/.config/nvim/lscripts/{{ item }}"
     owner: "{{ userid }}"
-    group: "{{ userid }}"
+    group: "{{ GROUP }}"
     mode: "0644"
   loop: "{{lscripts}}"
 
