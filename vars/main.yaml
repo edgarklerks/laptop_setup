@@ -15,6 +15,8 @@ scripts:
   - {script: install_ghcup.sh, creates: "{{ HOME }}/.ghcup/bin/ghcup", system: false, os: linux}
   - {script: install_yarn.sh, creates: /usr/local/bin/yarn, system: true, os: linux}
   - {script: install_fonts.sh, creates: "{{ HOME }}/.fonts/HackNerdFont-Bold.ttf", system: false, os: both}
+  - {script: install_vscode.sh, creates: "/Applications/Visual\ Studio\ Code.app", system: true, os: macos}
+  - {script: install_terraform_ls.sh, creates: "/opt/homebrew/bin/terraform-ls", system: false, os: macos}
 
 directories:
   - "{{ HOME }}/.config/nvim"
