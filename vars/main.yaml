@@ -17,6 +17,7 @@ scripts:
   - {script: install_fonts.sh, creates: "{{ HOME }}/.fonts/HackNerdFont-Bold.ttf", system: false, os: both}
   - {script: install_vscode.sh, creates: "/Applications/Visual\ Studio\ Code.app", system: true, os: macos}
   - {script: install_terraform_ls.sh, creates: "/opt/homebrew/bin/terraform-ls", system: false, os: macos}
+  - {script: install_omf.sh, creates: "{{ HOME }}/.config/omf/channel", system: false, os: both} 
 
 directories:
   - "{{ HOME }}/.config/nvim"
@@ -27,6 +28,8 @@ directories:
 files:
   - {src: "fish_variables", dest: "{{ HOME }}/.config/fish/fish_variables", os: both}
   - {src: "local_bin.fish", dest: "{{ HOME }}/.config/fish/conf.d/local_bin.fish" , os: both}
+  - {src: "omf.fish", dest: "{{ HOME }}/.config/fish/conf.d/omf.fish", os: both}
+  - {src: "fish_ssh.fish", dest: "{{ HOME }}/.config/fish/conf.d/fish_ssh.fish", os: both}
   - {src: "i3blocks.conf", dest: "{{ HOME }}/.config/i3blocks/config" , os: linux}
 
 templates:
@@ -48,7 +51,14 @@ lscripts:
   - notify.lua
 
 
+omf:
+  - agnoster
+  - gh
 
+omf_files:
+  - theme
+  - bundle
+  - channel
 
 
 

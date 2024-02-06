@@ -87,3 +87,5 @@
       loop: "{{ templates | selectattr('os', 'equalto', os)  | union(templates | selectattr('os','equalto','both')) }}"
     - name: Install nvim
       include_tasks: tasks/nvim.yaml
+    - name: Install omf
+      include_tasks: tasks/omf.yaml
